@@ -5,20 +5,17 @@ import { CircularProgress } from '@material-ui/core';
 import SelectButton from './SelectButton';
 
 const CryptoInfo = ({ coin }) => {
-	const [historicData, setHistoricData] = useState();
+	const [historicData, setHistoricData] = useState([]);
 	const [days, setDays] = useState(1);
-	const currency = 'USD';
 	const [flag, setflag] = useState(false);
 
 	const fetchHistoricData = async () => {
 		const { data } = await axios.get(
-			`https://api.coingecko.com/api/v3/coins/${coin.id}/market_chart?vs_currency=${currency}&days=${days}`
+			`https://api.coingecko.com/api/v3/coins/${coin.id}/market_chart?vs_currency=usd&days=${days}`
 		);
 		setflag(true);
 		setHistoricData(data.prices);
 	};
-
-	console.log(coin);
 
 	useEffect(() => {
 		fetchHistoricData();
@@ -68,7 +65,7 @@ const CryptoInfo = ({ coin }) => {
 						data={{
 							labels: historicData.map((coin) => {
 								let date = new Date(coin[0]);
-								let time =
+								let time = /* `${date.getHours()}:${date.getMinutes()}` */
 									date.getHours() > 12
 										? `${date.getHours() - 12}:${date.getMinutes()} PM`
 										: `${date.getHours()}:${date.getMinutes()} AM`;
@@ -78,7 +75,7 @@ const CryptoInfo = ({ coin }) => {
 							datasets: [
 								{
 									data: historicData.map((coin) => coin[1]),
-									label: `Price ( Past ${days} Days ) in ${currency}`,
+									label: `Price ( Past ${days} Days ) in usd`,
 									borderColor: '#4cd137',
 								},
 							],

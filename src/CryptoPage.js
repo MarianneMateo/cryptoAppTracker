@@ -10,9 +10,6 @@ const CryptoPage = () => {
 	const { id } = useParams();
 	const [coin, setCoin] = useState();
 
-	const currency = 'USD';
-	const symbol = '$';
-
 	const fetchCoin = async () => {
 		const { data } = await axios.get(
 			`https://api.coingecko.com/api/v3/coins/${id}`
@@ -29,15 +26,14 @@ const CryptoPage = () => {
 	if (!coin) return <LinearProgress style={{ backgroundColor: '#4cd137' }} />;
 
 	return (
-		<div style={{ display: 'flex' }}>
+		<div style={{ display: 'flex', marginTop: '60px' }}>
 			<div
 				style={{
 					width: '30%',
 					display: 'flex',
 					flexDirection: 'column',
 					alignItems: 'center',
-					marginTop: 25,
-					borderRight: '2px solid grey',
+					margin: 25,
 				}}
 			>
 				<img
@@ -93,14 +89,12 @@ const CryptoPage = () => {
 								fontFamily: 'Montserrat',
 							}}
 						>
-							{symbol}{' '}
-							{numberWithCommas(
-								coin?.market_data.current_price[currency.toLowerCase()]
-							)}
+							$ {numberWithCommas(coin?.market_data.current_price['usd'])}
 						</Typography>
 					</span>
 				</div>
 			</div>
+			<div style={{ borderLeft: '2px solid black' }}></div>
 			<CryptoInfo coin={coin} />
 		</div>
 	);

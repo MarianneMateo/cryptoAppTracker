@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import {
 	Container,
 	TableCell,
@@ -24,17 +25,23 @@ export default function CryptoTable() {
 	const [loading, setLoading] = useState(false);
 	const [search, setSearch] = useState('');
 
+	const useStyles = makeStyles({
+		row: {
+			cursor: 'pointer',
+			'&:hover': {
+				backgroundColor: '#abf263',
+			},
+		},
+	});
+
 	const history = useHistory();
-	const symbol = '$';
-	const currency = 'USD';
+	const classes = useStyles();
 
 	const fetchCoins = async () => {
 		setLoading(true);
 		const { data } = await axios.get(
-			`https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=100&page=1&sparkline=false`
+			`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false`
 		);
-		console.log(data);
-
 		setCoins(data);
 		setLoading(false);
 	};
@@ -42,14 +49,10 @@ export default function CryptoTable() {
 	useEffect(() => {
 		fetchCoins();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [currency]);
+	}, []);
 
 	const handleSearch = () => {
-		return coins.filter(
-			(coin) =>
-				coin.name.toLowerCase().includes(search) ||
-				coin.symbol.toLowerCase().includes(search)
-		);
+		return coins.filter((coin) => coin.name.toLowerCase().includes(search));
 	};
 
 	return (
@@ -92,7 +95,7 @@ export default function CryptoTable() {
 								return (
 									<TableRow
 										onClick={() => history.push(`/crypto/${row.id}`)}
-										style={{ cursor: 'pointer' }}
+										className={classes.row}
 										key={row.name}
 									>
 										<TableCell
@@ -128,8 +131,7 @@ export default function CryptoTable() {
 											</div>
 										</TableCell>
 										<TableCell align="right">
-											{symbol}
-											{numberWithCommas(row.current_price.toFixed(2))}
+											${numberWithCommas(row.current_price.toFixed(2))}
 										</TableCell>
 										<TableCell
 											align="right"
@@ -142,7 +144,7 @@ export default function CryptoTable() {
 											{row.price_change_percentage_24h.toFixed(2)}%
 										</TableCell>
 										<TableCell align="right">
-											{symbol}{' '}
+											${' '}
 											{numberWithCommas(row.market_cap.toString().slice(0, -6))}
 											M
 										</TableCell>
